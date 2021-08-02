@@ -78,20 +78,20 @@ const seed = async (data) => {
 
   await db.query(categoryInsertionQueryStr)
   console.log("inserted into category table!");
+};
 
-  const formattedUserData = formatUserData(userData)
+const formattedUserData = formatUserData(userData)
 
-  const userInsertionQueryStr = format(
-    `
+const userInsertionQueryStr = format(
+  `
       INSERT INTO users
       (username, avatar_url, name)
       VALUES %L
       RETURNING *;
       `, formattedUserData
-  )
+)
 
-  await db.query(userInsertionQueryStr)
-  console.log("inserted into users table");
-};
+await db.query(userInsertionQueryStr)
+console.log("inserted into users table");
 
 module.exports = { seed };
