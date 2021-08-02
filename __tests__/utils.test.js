@@ -77,17 +77,95 @@ describe('formatUserData', () => {
     });
 });
 
-describe('formateReviewsData', () => {
+describe('formatReviewsData', () => {
     test('if passed an empty array, return empty array', () => {
         expect(formatReviewData([])).toEqual([])
     });
-    // test('when passed correct data, returns an array of arrays', () => {
-    //     const input = [
-
-    //     ]
-    //     expect(Array.isArray(formatReviewData(input))).toBe(true)
-    //     formatReviewData(input).forEach(index => {
-    //         expect(Array.isArray(index)).toBe(true)
-    //     })
-    // });
+    test('when passed correct data, returns an array of arrays', () => {
+        const input = [
+            {
+                title: 'Title1',
+                designer: 'Designer1',
+                owner: 'onwer1',
+                review_img_url:
+                    'url1',
+                review_body: 'body1',
+                category: 'cat1',
+                created_at: new Date(1610964020514),
+                votes: 1
+            }
+        ]
+        expect(Array.isArray(formatReviewData(input))).toBe(true)
+        formatReviewData(input).forEach(index => {
+            expect(Array.isArray(index)).toBe(true)
+        })
+    });
+    test('should not manipulate data passed in', () => {
+        const input = [
+            {
+                title: 'Title1',
+                designer: 'Designer1',
+                owner: 'onwer1',
+                review_img_url:
+                    'url1',
+                review_body: 'body1',
+                category: 'cat1',
+                created_at: new Date(1610964020514),
+                votes: 1
+            }
+        ]
+        formatReviewData(input)
+        expect(input).toEqual([
+            {
+                title: 'Title1',
+                designer: 'Designer1',
+                owner: 'onwer1',
+                review_img_url:
+                    'url1',
+                review_body: 'body1',
+                category: 'cat1',
+                created_at: new Date(1610964020514),
+                votes: 1
+            }
+        ])
+        expect(input[0]).toEqual({
+            title: 'Title1',
+            designer: 'Designer1',
+            owner: 'onwer1',
+            review_img_url:
+                'url1',
+            review_body: 'body1',
+            category: 'cat1',
+            created_at: new Date(1610964020514),
+            votes: 1
+        })
+    });
+    test('returns an array of nested arrays with the correct data inside', () => {
+        const input = [
+            {
+                title: 'Title1',
+                designer: 'Designer1',
+                owner: 'onwer1',
+                review_img_url:
+                    'url1',
+                review_body: 'body1',
+                category: 'cat1',
+                created_at: new Date(1610964020514),
+                votes: 1
+            }
+        ]
+        expect(formatReviewData(input)).toEqual(
+            [
+                [
+                    'Title1',
+                    'Designer1',
+                    'onwer1',
+                    'url1',
+                    1,
+                    'cat1',
+                    'onwer1',
+                    new Date(1610964020514)
+                ]
+            ])
+    });
 });

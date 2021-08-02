@@ -1,7 +1,8 @@
 
 const db = require('../connection');
 const format = require("pg-format");
-const { formatCatData, formatUserData } = require('../utils/data-manipulation');
+const { formatCatData, formatUserData, formatReviewData } = require('../utils/data-manipulation');
+
 
 
 const seed = async (data) => {
@@ -93,9 +94,6 @@ const seed = async (data) => {
   await db.query(userInsertionQueryStr)
   console.log("inserted into users table");
 };
-
-
-
 
 
 module.exports = { seed };
