@@ -1,7 +1,7 @@
 
 const db = require('../connection');
 const format = require("pg-format");
-const { formatCatData } = require('../utils/data-manipulation');
+const { formatCatData, formatUserData } = require('../utils/data-manipulation');
 
 
 const seed = async (data) => {
@@ -22,6 +22,7 @@ const seed = async (data) => {
     `
   )
   console.log("categories table made");
+
   await db.query(
     `
     CREATE TABLE users (
@@ -32,6 +33,7 @@ const seed = async (data) => {
     `
   )
   console.log("users table made");
+
   await db.query(
     `
     CREATE TABLE reviews (
@@ -48,6 +50,7 @@ const seed = async (data) => {
     `
   )
   console.log("reviews table created");
+
   await db.query(
     `
     CREATE TABLE comments (
@@ -61,7 +64,6 @@ const seed = async (data) => {
     `
   )
   console.log("comments table created");
-
 
   const formattedCatData = formatCatData(categoryData)
 
@@ -77,8 +79,19 @@ const seed = async (data) => {
   await db.query(categoryInsertionQueryStr)
   console.log("inserted into category table!");
 
+  const formattedUserData = formatUserData(userData)
 
+  const userInsertionQueryStr = format(
+    `
+      INSERT INTO users
+      (username, avatar_url, name)
+      VALUES %L
+      RETURNING *;
+      `, formattedUserData
+  )
 
+  await db.query(userInsertionQueryStr)
+  console.log("inserted into users table");
 };
 
 module.exports = { seed };

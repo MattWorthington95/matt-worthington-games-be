@@ -11,6 +11,16 @@ const formatCatData = (data) => {
     })
 }
 
+const formatUserData = (data) => {
+    if (data.length === 0) return []
+    return data.map(user => {
+        const userCopy = { ...user }
+        return [
+            user.username,
+            user.avatar_url,
+            user.name
+        ]
+    })
+}
 
-
-module.exports = { formatCatData }
+module.exports = { formatCatData, formatUserData }
