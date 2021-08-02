@@ -77,17 +77,6 @@ const seed = async (data) => {
   await db.query(categoryInsertionQueryStr)
   console.log("inserted into category table!");
 
-  // const formattedUserData = formateUserData(userData)
-
-
-  // const userInsertionQueryStr = format(
-  //   `
-  //     INSERT INTO users
-  //     (username, avatar_url, name)
-  //     VALUES %L
-  //     RETURNING *;
-  //     `, formattedUserData
-  // )
 
 
 };
