@@ -19,6 +19,9 @@
     "url": "https://github.com/northcoders/be-nc-games/issues"
   },
   "homepage": "https://github.com/northcoders/be-nc-games#readme",
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "jest": "^27.0.6",
+    "pg": "^8.7.1"
+  }
 }

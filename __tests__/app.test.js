@@ -4,3 +4,9 @@ const { seed } = require('../db/seeds/seed.js');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
+
+describe('Name of the group', () => {
+    test('should ', () => {
+
+    });
+});
