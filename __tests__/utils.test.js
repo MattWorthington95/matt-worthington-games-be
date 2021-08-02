@@ -1,5 +1,5 @@
 const format = require("pg-format");
-const { formatCatData, formatUserData } = require("../db/utils/data-manipulation")
+const { formatCatData, formatUserData, formatReviewData } = require("../db/utils/data-manipulation")
 
 
 describe('formatCatData', () => {
@@ -77,3 +77,17 @@ describe('formatUserData', () => {
     });
 });
 
+describe('formateReviewsData', () => {
+    test('if passed an empty array, return empty array', () => {
+        expect(formatReviewData([])).toEqual([])
+    });
+    // test('when passed correct data, returns an array of arrays', () => {
+    //     const input = [
+
+    //     ]
+    //     expect(Array.isArray(formatReviewData(input))).toBe(true)
+    //     formatReviewData(input).forEach(index => {
+    //         expect(Array.isArray(index)).toBe(true)
+    //     })
+    // });
+});
