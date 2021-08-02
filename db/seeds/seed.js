@@ -1,19 +1,18 @@
 
 const db = require('../connection');
+const format = require("pg-format");
+const { formatCatData } = require('../utils/data-manipulation');
+
 
 const seed = async (data) => {
   const { categoryData, commentData, reviewData, userData } = data;
   await db.query(`DROP TABLE IF EXISTS comments;`)
-  console.log("deleted comments");
   await db.query(`DROP TABLE IF EXISTS reviews;`)
-  console.log("deleted reviews");
   await db.query(`DROP TABLE IF EXISTS categories;`)
-  console.log("deleted categories");
   await db.query(`DROP TABLE IF EXISTS users;`)
-  console.log("deleted users");
 
+  console.log("All tables deleted");
 
-  console.log("all tables dropped");
   await db.query(
     `
     CREATE TABLE categories (
@@ -64,8 +63,33 @@ const seed = async (data) => {
   console.log("comments table created");
 
 
-  // 1. create tables
-  // 2. insert data
+  const formattedCatData = formatCatData(categoryData)
+
+  const categoryInsertionQueryStr = format(
+    `
+    INSERT INTO categories
+    (slug, description)
+    VALUES %L
+    RETURNING *;
+    `, formattedCatData
+  )
+
+  await db.query(categoryInsertionQueryStr)
+  console.log("inserted into category table!");
+
+  // const formattedUserData = formateUserData(userData)
+
+
+  // const userInsertionQueryStr = format(
+  //   `
+  //     INSERT INTO users
+  //     (username, avatar_url, name)
+  //     VALUES %L
+  //     RETURNING *;
+  //     `, formattedUserData
+  // )
+
+
 };
 
 module.exports = { seed };
