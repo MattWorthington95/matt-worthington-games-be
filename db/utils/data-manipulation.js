@@ -51,4 +51,26 @@ const titleToMatchID = (reviewData) => {
     return matchedTitleAndID
 }
 
-module.exports = { formatCatData, formatUserData, formatReviewData, titleToMatchID }
+const formatCommentData = (commentData, titleMatchedId) => {
+    if (commentData.length === 0) return []
+
+    const commentDataCopy = [...commentData]
+    const titleMatchedIdCopy = { ...titleMatchedId }
+
+    return commentDataCopy.map(comment => {
+        const commentCopy = { ...comment }
+        // console.log(commentCopy.belongs_to, "<< belongs to");
+        // console.log(titleMatchedIdCopy, "<<<< matched data");
+        const review_id = titleMatchedIdCopy[commentCopy.belongs_to]
+        return [
+            commentCopy.created_by,
+            review_id,
+            commentCopy.votes,
+            commentCopy.created_at,
+            commentCopy.body
+        ]
+    })
+}
+// belongs to from comment and title from review are the same
+
+module.exports = { formatCatData, formatUserData, formatReviewData, titleToMatchID, formatCommentData }

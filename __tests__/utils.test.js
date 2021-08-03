@@ -200,7 +200,6 @@ describe('titleToMatchID', () => {
                 votes: 1
             }
         ])
-        console.log(titleToMatchID(reviewData));
     });
     test('returns an object with matched title and id', () => {
         const reviewData = [
@@ -221,3 +220,72 @@ describe('titleToMatchID', () => {
     });
 });
 
+describe('formatCommentData', () => {
+    test('if passed an empty array, return empty array', () => {
+        expect(formatCommentData([])).toEqual([])
+    });
+    test('when passed correct data, returns an array of arrays', () => {
+        const input1 = [{
+            body: "'I loved this game too!'",
+            belongs_to: 'Jenga',
+            created_by: 'bainesface',
+            votes: 16,
+            created_at: new Date(1511354613389)
+        }]
+        const input2 = {
+            Jenga: 2
+        }
+        expect(Array.isArray(formatCommentData(input1, input2))).toBe(true)
+        formatCommentData(input1, input2).forEach(index => {
+            expect(Array.isArray(index)).toBe(true)
+        })
+    });
+    test('should not manipulate data passed in', () => {
+        const input1 = [{
+            body: "'I loved this game too!'",
+            belongs_to: 'Jenga',
+            created_by: 'bainesface',
+            votes: 16,
+            created_at: new Date(1511354613389)
+        }]
+        const input2 = {
+            Jenga: 2
+        }
+        formatCommentData(input1, input2)
+        expect(input1).toEqual([{
+            body: "'I loved this game too!'",
+            belongs_to: 'Jenga',
+            created_by: 'bainesface',
+            votes: 16,
+            created_at: new Date(1511354613389)
+        }])
+        expect(input2).toEqual({
+            Jenga: 2
+        })
+    });
+    test('returns an array of nested arrays with the correct data inside', () => {
+        const input1 = [{
+            body: "'I loved this game too!'",
+            belongs_to: 'Jenga',
+            created_by: 'bainesface',
+            votes: 16,
+            created_at: new Date(1511354613389)
+        }]
+        const input2 = {
+            Jenga: 2
+        }
+        console.log(formatCommentData(input1, input2));
+        expect(formatCommentData(input1, input2)).toEqual([
+            [
+                'bainesface',
+                2,
+                16,
+                new Date(1511354613389),
+                "'I loved this game too!'"
+            ]
+        ]
+
+        );
+
+    });
+})
