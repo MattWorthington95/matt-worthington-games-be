@@ -1,7 +1,7 @@
 
 const db = require('../connection');
 const format = require("pg-format");
-const { formatCatData, formatUserData, formatReviewData, titleToMatchID } = require('../utils/data-manipulation');
+const { formatCatData, formatUserData, formatReviewData, titleToMatchID, formatCommentData } = require('../utils/data-manipulation');
 
 
 
@@ -109,7 +109,20 @@ const seed = async (data) => {
   console.log("inserted into reviews table");
 
   const titleMatchedId = titleToMatchID(reviewTableData.rows)
-  console.log(titleMatchedId);
+
+  const formattedCommentData = formatCommentData(commentData, titleMatchedId)
+
+
+  const commentInsertionQueryStr = format(
+    `
+    INSERT INTO comments
+    (author, review_id, votes, created_at, body)
+    VALUES %L
+    RETURNING *;
+    `, formattedCommentData
+  )
+  await db.query(commentInsertionQueryStr)
+  console.log("inserted into comments table");
 };
 
 
