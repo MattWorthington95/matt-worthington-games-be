@@ -1,7 +1,5 @@
 // extract any functions you are using to manipulate your data, into this file
 
-const reviews = require("../data/test-data/reviews")
-
 const formatCatData = (data) => {
     if (data.length === 0) return []
     return data.map(cat => {
@@ -42,4 +40,15 @@ const formatReviewData = (data) => {
     })
 }
 
-module.exports = { formatCatData, formatUserData, formatReviewData }
+const titleToMatchID = (reviewData) => {
+    if (reviewData.length === 0) return []
+    const matchedTitleAndID = {}
+    const reviewDataCopy = [...reviewData]
+    reviewDataCopy.forEach(review => {
+        const reviewCopy = { ...review }
+        matchedTitleAndID[reviewCopy.title] = reviewCopy.review_id
+    })
+    return matchedTitleAndID
+}
+
+module.exports = { formatCatData, formatUserData, formatReviewData, titleToMatchID }

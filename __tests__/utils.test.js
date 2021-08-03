@@ -1,5 +1,5 @@
 const format = require("pg-format");
-const { formatCatData, formatUserData, formatReviewData } = require("../db/utils/data-manipulation")
+const { formatCatData, formatUserData, formatReviewData, titleToMatchID, formatCommentData } = require("../db/utils/data-manipulation")
 
 
 describe('formatCatData', () => {
@@ -38,7 +38,6 @@ describe('formatCatData', () => {
         ])
     });
 });
-
 
 describe('formatUserData', () => {
     test('if passed an empty array, return empty array', () => {
@@ -169,3 +168,56 @@ describe('formatReviewsData', () => {
             ])
     });
 });
+
+describe('titleToMatchID', () => {
+    test('does not manipulate the data being passed in', () => {
+        const reviewData = [
+            {
+                review_id: 1,
+                title: 'Title1',
+                designer: 'Designer1',
+                owner: 'onwer1',
+                review_img_url:
+                    'url1',
+                review_body: 'body1',
+                category: 'cat1',
+                created_at: new Date(1610964020514),
+                votes: 1
+            }
+        ]
+        titleToMatchID(reviewData)
+        expect(reviewData).toEqual([
+            {
+                review_id: 1,
+                title: 'Title1',
+                designer: 'Designer1',
+                owner: 'onwer1',
+                review_img_url:
+                    'url1',
+                review_body: 'body1',
+                category: 'cat1',
+                created_at: new Date(1610964020514),
+                votes: 1
+            }
+        ])
+        console.log(titleToMatchID(reviewData));
+    });
+    test('returns an object with matched title and id', () => {
+        const reviewData = [
+            {
+                review_id: 1,
+                title: 'Title1',
+                designer: 'Designer1',
+                owner: 'onwer1',
+                review_img_url:
+                    'url1',
+                review_body: 'body1',
+                category: 'cat1',
+                created_at: new Date(1610964020514),
+                votes: 1
+            }
+        ]
+        expect(titleToMatchID(reviewData)).toEqual({ Title1: 1 })
+    });
+});
+
