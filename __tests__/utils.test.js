@@ -20,7 +20,11 @@ describe('formatCatData', () => {
             { slug: "slug1", description: "description1" },
             { slug: "slug2", description: "description2" }
         ]
+
         formatCatData(input)
+
+        expect(formatCatData(input)).not.toBe(input)
+
         expect(input).toEqual([
             { slug: "slug1", description: "description1" },
             { slug: "slug2", description: "description2" }
@@ -58,6 +62,9 @@ describe('formatUserData', () => {
             { username: "username2", avatar_url: "url2", name: "name2" }
         ]
         formatUserData(input)
+
+        expect(formatUserData(input)).not.toBe(input)
+
         expect(input).toEqual([
             { username: "username1", avatar_url: "url1", name: "name1" },
             { username: "username2", avatar_url: "url2", name: "name2" }
@@ -114,6 +121,9 @@ describe('formatReviewsData', () => {
             }
         ]
         formatReviewData(input)
+
+        expect(formatReviewData(input)).not.toBe(input)
+
         expect(input).toEqual([
             {
                 title: 'Title1',
@@ -251,7 +261,11 @@ describe('formatCommentData', () => {
         const input2 = {
             Jenga: 2
         }
+
         formatCommentData(input1, input2)
+
+        expect(formatCommentData(input1, input2)).not.toBe(input1)
+
         expect(input1).toEqual([{
             body: "'I loved this game too!'",
             belongs_to: 'Jenga',

@@ -12,7 +12,7 @@ const seed = async (data) => {
   await db.query(`DROP TABLE IF EXISTS categories;`)
   await db.query(`DROP TABLE IF EXISTS users;`)
 
-  console.log("All tables deleted");
+  // console.log("All tables deleted");
 
   await db.query(
     `
@@ -22,7 +22,7 @@ const seed = async (data) => {
     )
     `
   )
-  console.log("categories table made");
+  // console.log("categories table made");
 
   await db.query(
     `
@@ -33,7 +33,7 @@ const seed = async (data) => {
     )
     `
   )
-  console.log("users table made");
+  // console.log("users table made");
 
   await db.query(
     `
@@ -50,7 +50,7 @@ const seed = async (data) => {
     )
     `
   )
-  console.log("reviews table created");
+  // console.log("reviews table created");
 
   await db.query(
     `
@@ -64,7 +64,7 @@ const seed = async (data) => {
     )
     `
   )
-  console.log("comments table created");
+  // console.log("comments table created");
 
   const formattedCatData = formatCatData(categoryData)
 
@@ -78,7 +78,7 @@ const seed = async (data) => {
   )
 
   await db.query(categoryInsertionQueryStr)
-  console.log("inserted into category table!");
+  // console.log("inserted into category table!");
 
   const formattedUserData = formatUserData(userData)
 
@@ -92,7 +92,7 @@ const seed = async (data) => {
   )
 
   await db.query(userInsertionQueryStr)
-  console.log("inserted into users table");
+  // console.log("inserted into users table");
 
   const formattedReviewData = formatReviewData(reviewData)
 
@@ -106,7 +106,7 @@ const seed = async (data) => {
   )
 
   const reviewTableData = await db.query(reviewInsertionQueryStr)
-  console.log("inserted into reviews table");
+  // console.log("inserted into reviews table");
 
   const titleMatchedId = titleToMatchID(reviewTableData.rows)
 
@@ -122,7 +122,7 @@ const seed = async (data) => {
     `, formattedCommentData
   )
   await db.query(commentInsertionQueryStr)
-  console.log("inserted into comments table");
+  // console.log("inserted into comments table");
 };
 
 
