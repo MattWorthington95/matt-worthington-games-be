@@ -81,4 +81,53 @@ describe('/api/reviews/:review_id', () => {
             });
         });
     });
+    describe('PATCH', () => {
+        test('201: return an updated review working with positive num', async () => {
+            const { body: { updatedReview } } = await request(app)
+                .patch('/api/reviews/2')
+                .send({ inc_votes: 1 })
+                .expect(201)
+            expect(updatedReview).toEqual({
+                review_id: 2,
+                title: 'Jenga',
+                review_body: 'Leslie Scott',
+                designer: 'philippaclaire9',
+                review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                votes: 6,
+                category: 'dexterity',
+                owner: 'philippaclaire9',
+                created_at: '2021-01-18T00:00:00.000Z'
+            })
+        });
+        test('201: return an updated review working with negative num', async () => {
+            const { body: { updatedReview } } = await request(app)
+                .patch('/api/reviews/2')
+                .send({ inc_votes: -1 })
+                .expect(201)
+            expect(updatedReview.votes).toEqual(4)
+        });
+        describe('Error Handling', () => {
+            test('if passed an id that doesnt exist, send back custom message', async () => {
+                const { body: { message } } = await request(app)
+                    .patch('/api/reviews/2000')
+                    .send({ inc_votes: 1 })
+                    .expect(400)
+                expect(message).toBe('Review not found')
+            });
+            test('if passed inc_votes incorrectly, return a custom message', async () => {
+                const { body: { message } } = await request(app)
+                    .patch('/api/reviews/1')
+                    .send({ incorrectKey: 1 })
+                    .expect(400)
+                expect(message).toBe('Incorrect key passed for Patched')
+            });
+            test('if passed incorrect value, return a custom message', async () => {
+                const { body: { message } } = await request(app)
+                    .patch('/api/reviews/1')
+                    .send({ inc_votes: "hello" })
+                    .expect(400)
+                expect(message).toBe('inc_votes need to be a number')
+            });
+        });
+    });
 });

@@ -3,7 +3,15 @@ const handleRouter404s = (req, res, next) => {
 }
 
 const handleCustomErrors = (err, req, res, next) => {
-    res.status(400).send({ message: err.message })
+    if (err.status) {
+        res.status(400).send({ message: err.message })
+    }
+    next(err)
 }
 
-module.exports = { handleRouter404s, handleCustomErrors }
+const handle500s = (err, req, res, next) => {
+    console.log(err);
+    res.status(500).send({ message: "Unknown error" })
+}
+
+module.exports = { handleRouter404s, handleCustomErrors, handle500s }

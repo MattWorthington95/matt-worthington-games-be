@@ -1,8 +1,11 @@
 const express = require('express')
 const app = require('../app')
-const { getReviewById } = require('../controllers/contollers')
+const { getReviewById, patchReviewById } = require('../controllers/contollers')
 const reviewRouter = express.Router()
 
-reviewRouter.use("/:review_id", getReviewById)
+reviewRouter.get("/:review_id", getReviewById)
+reviewRouter.patch("/:review_id", patchReviewById)
+
+
 
 module.exports = reviewRouter
