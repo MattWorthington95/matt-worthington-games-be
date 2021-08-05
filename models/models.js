@@ -40,9 +40,7 @@ const updateReviewById = async (review_id, inc_votes) => {
     return updatedReview[0]
 }
 
-
 const selectReview = async (sort_by = "created_at", order = "DESC", category) => {
-
     const validColumns = [
         "review_id",
         "title",
@@ -73,8 +71,7 @@ const selectReview = async (sort_by = "created_at", order = "DESC", category) =>
     reviews.votes, reviews.category, reviews.owner, reviews.created_at, COUNT(comments.review_id) AS comment_count
     FROM reviews
     LEFT JOIN comments
-    ON comments.review_id = reviews.review_id
-    `
+    ON comments.review_id = reviews.review_id`
 
     const queryValues = []
 
@@ -94,14 +91,38 @@ const selectReview = async (sort_by = "created_at", order = "DESC", category) =>
     return reviews
 }
 
-
 const selectCommentsByReviewId = async (review_id) => {
     await selectReviewById(review_id)
+
     let queryStr = `SELECT * FROM comments WHERE review_id = $1`
     const queryValues = [review_id]
     const { rows: comments } = await db.query(queryStr, queryValues)
-    console.log(comments);
+    comments.forEach(comment => {
+        delete comment.review_id
+    })
     return comments
 }
 
-module.exports = { selectCategories, selectReviewById, updateReviewById, selectReview, selectCommentsByReviewId }
+const addComment = async (review_id, username, body) => {
+    await selectReviewById(review_id)
+
+    if (typeof username !== "string") {
+        return Promise.reject({ status: 400, message: "Invalid username key or value" })
+    } else if (typeof body !== "string") {
+        return Promise.reject({ status: 400, message: "Invalid body key or value" })
+    }
+    const validKeys = ["username", "body"]
+    let queryStr =
+        `INSERT INTO comments
+         (author, review_id, votes, created_at, body)
+         VALUES
+         ($1, $2, $3, $4, $5)
+         RETURNING*
+    `
+    const queryValues = [username, review_id, 0, new Date(), body]
+    const { rows: addedComment } = await db.query(queryStr, queryValues)
+    delete addedComment[0].review_id
+    return addedComment[0]
+}
+
+module.exports = { selectCategories, selectReviewById, updateReviewById, selectReview, selectCommentsByReviewId, addComment }
