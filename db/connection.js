@@ -13,13 +13,13 @@ if (!process.env.PGDATABASE) {
 }
 
 const config =
-  ENV === "production"
+  ENV === 'production'
     ? {
       connectionString: process.env.DATABASE_URL,
       ssl: {
         rejectUnauthorized: false,
       },
     }
-    : {},
+    : {};
 
-  module.exports = new Pool(config);
+module.exports = new Pool(config);
