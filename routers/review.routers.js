@@ -1,11 +1,15 @@
-const express = require('express')
 const app = require('../app')
-const { getReviewById, patchReviewById } = require('../controllers/contollers')
-const reviewRouter = express.Router()
-
-reviewRouter.get("/:review_id", getReviewById)
-reviewRouter.patch("/:review_id", patchReviewById)
+const { getReviewById, patchReviewById, getReviews } = require('../controllers/contollers')
+const reviews = require('../db/data/test-data/reviews')
+const reviewRouter = require('express').Router()
 
 
+
+reviewRouter.route("/:review_id")
+    .get(getReviewById)
+    .patch(patchReviewById)
+
+reviewRouter.route("/")
+    .get(getReviews)
 
 module.exports = reviewRouter

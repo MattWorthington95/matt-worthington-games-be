@@ -3,6 +3,7 @@ const request = require('supertest')
 const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const { seed } = require('../db/seeds/seed.js');
+const reviews = require('../db/data/test-data/reviews.js');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -131,3 +132,57 @@ describe('/api/reviews/:review_id', () => {
         });
     });
 });
+
+describe('/api/reviews', () => {
+    describe('GET', () => {
+        test('200: should return all reviews as an array', async () => {
+            const { body: { reviews } } = await request(app)
+                .get("/api/reviews")
+                .expect(200)
+            expect(Array.isArray(reviews)).toBe(true)
+        });
+        test('200: should return all reviews', async () => {
+            const { body: { reviews } } = await request(app)
+                .get("/api/reviews")
+                .expect(200)
+            expect(Array.isArray(reviews)).toBe(true)
+            reviews.forEach(review => {
+                expect(review).toMatchObject(expect.objectContaining({
+                    review_id: expect.any(Number),
+                    title: expect.any(String),
+                    review_img_url: expect.any(String),
+                    votes: expect.any(Number),
+                    category: expect.any(String),
+                    owner: expect.any(String),
+                    comment_count: expect.any(String)
+                }))
+            });
+        });
+        test('200: if passed valid sort query, sort by it', async () => {
+            const { body: { reviews } } = await request(app)
+                .get("/api/reviews?sort_by=votes")
+                .expect(200)
+            expect(reviews[0].votes).toBe(100)
+            expect(reviews[reviews.length - 1].votes).toBe(1)
+        });
+        test('200: if passed valid sort query, sort by it', async () => {
+            const { body: { reviews } } = await request(app)
+                .get("/api/reviews?sort_by=comment_count")
+                .expect(200)
+            expect(reviews[0].comment_count).toBe("3")
+            expect(reviews[reviews.length - 1].comment_count).toBe("0")
+        });
+        test('200: if passed a order query, toggle ASC and DESC in return', async () => {
+            const { body: { reviews } } = await request(app)
+                .get("/api/reviews?sort_by=comment_count&order=asc")
+                .expect(200)
+            expect(reviews[0].comment_count).toBe("0")
+            expect(reviews[reviews.length - 1].comment_count).toBe("3")
+        });
+        // test('200: will filter categories', () => {
+        //     const { body: { reviews } } = await request(app)
+        //         .get("/api/reviews?category=jenga")
+        //         .expect(200)
+        // });
+    });
+})

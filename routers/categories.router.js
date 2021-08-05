@@ -1,10 +1,9 @@
-const express = require('express')
 const app = require('../app')
 const { getCategories } = require('../controllers/contollers')
+const categoriesRouter = require('express').Router()
 
-const categoriesRouter = express.Router()
-
-categoriesRouter.get("/", getCategories)
+categoriesRouter.route("/")
+    .get(getCategories)
 
 
 module.exports = categoriesRouter

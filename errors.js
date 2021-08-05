@@ -5,8 +5,10 @@ const handleRouter404s = (req, res, next) => {
 const handleCustomErrors = (err, req, res, next) => {
     if (err.status) {
         res.status(400).send({ message: err.message })
+    } else {
+        next(err)
     }
-    next(err)
+
 }
 
 const handle500s = (err, req, res, next) => {
