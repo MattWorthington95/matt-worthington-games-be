@@ -40,8 +40,33 @@ const updateReviewById = async (review_id, inc_votes) => {
 }
 
 
-const selectReview = async (sort_by = "created_at", order = "DESC") => {
+const selectReview = async (sort_by = "created_at", order = "DESC", category) => {
 
+    const validColumns = [
+        "review_id",
+        "title",
+        "review_img_url",
+        "votes",
+        "category",
+        "owner",
+        "created_at",
+        "comment_count"
+    ]
+    const validCategories = {
+        'eurogame': 'euro game',
+        'socialdeduction': 'social deduction',
+        "dexterity": "dexterity"
+    }
+
+
+    if (!validColumns.includes(sort_by)) {
+        return Promise.reject({ status: 400, message: "Invalid 'sort by' term. It does not exist" })
+    }
+    if (order) {
+        if (order !== "ASC" && order !== "DESC") {
+            return Promise.reject({ status: 400, message: "Invalid order declared" })
+        }
+    }
 
     let queryStr =
         `SELECT reviews.review_id, reviews.title, reviews.review_img_url,
@@ -49,59 +74,25 @@ const selectReview = async (sort_by = "created_at", order = "DESC") => {
     FROM reviews
     LEFT JOIN comments
     ON comments.review_id = reviews.review_id
-    GROUP BY reviews.review_id
     `
+
+    const queryValues = []
+
+    if (category) {
+        if (validCategories[category]) {
+            queryStr += ` WHERE reviews.category = $1`
+            queryValues.push(validCategories[category])
+        } else {
+            return Promise.reject({ status: 400, message: "Invalid category declared" })
+        }
+    }
+
+    queryStr += ` GROUP BY reviews.review_id`
     queryStr += ` ORDER BY ${sort_by} ${order}`
 
-
-    // const { rows: log } = await db.query(`SELECT * FROM reviews`)
-    // console.log(log[0]);
-
-    const { rows: reviews } = await db.query(queryStr)
+    const { rows: reviews } = await db.query(queryStr, queryValues)
     return reviews
-
 }
-
-// reviews.review_id, reviews.title, reviews.review_img_url,
-//     reviews.votes, reviews.category, reviews.owner, reviews.created_at 
-
-// const selectReview = async (sort_by = "created_at", order = "DESC") => {
-
-//     let queryStr = `SELECT * FROM reviews `
-//     let sortByCommentCount = true
-//     if (sort_by !== "comment_count") {
-//         sortByCommentCount = false
-
-//         queryStr += ` ORDER BY ${sort_by} ${order}`
-//     }
-
-//     const { rows: reviews } = await db.query(queryStr)
-
-//     // TODO: look into SQL count, as think this can be done with one query
-//     const reviewsWithCount = await Promise.all(reviews.map(async review => {
-//         const reviewWithCountById = await selectReviewById(review.review_id)
-//         return reviewWithCountById
-//     }))
-
-//     if (sortByCommentCount) {
-//         return (reviewsWithCount.sort((a, b) => {
-//             if (b.comment_count > a.comment_count) {
-//                 return 1
-//             } else if (a.comment_count > b.comment_count) {
-//                 return -1
-//             } else {
-//                 return 0
-//             }
-//         }));
-//     }
-//     return reviewsWithCount
-// }
-
-// sort_by, which sorts the reviews by any valid column (defaults to date)
-
-// order, which can be set to asc or desc for ascending or descending (defaults to descending)
-
-// category, which filters the reviews by the category value specified in the query
 
 
 

@@ -179,10 +179,34 @@ describe('/api/reviews', () => {
             expect(reviews[0].comment_count).toBe("0")
             expect(reviews[reviews.length - 1].comment_count).toBe("3")
         });
-        // test('200: will filter categories', () => {
-        //     const { body: { reviews } } = await request(app)
-        //         .get("/api/reviews?category=jenga")
-        //         .expect(200)
-        // });
+        test('200: will filter categories', async () => {
+            const { body: { reviews } } = await request(app)
+                .get("/api/reviews?category=eurogame")
+                .expect(200)
+            expect(reviews.length).not.toBe(0)
+            expect(reviews.every(review => {
+                return review.category === 'euro game'
+            })).toBe(true)
+        });
+        describe('Error Handling', () => {
+            test('should return custom message if invalid sort_by', async () => {
+                const { body: { message } } = await request(app)
+                    .get("/api/reviews?sort_by=invalid_sort_by")
+                    .expect(400)
+                expect(message).toBe("Invalid 'sort by' term. It does not exist")
+            });
+            test('should return custom message if invalid order', async () => {
+                const { body: { message } } = await request(app)
+                    .get("/api/reviews?order=invalid_order")
+                    .expect(400)
+                expect(message).toBe("Invalid order declared")
+            });
+            test('should return custom message if invalid category given', async () => {
+                const { body: { message } } = await request(app)
+                    .get("/api/reviews?category=invalid_category")
+                    .expect(400)
+                expect(message).toBe("Invalid category declared")
+            });
+        });
     });
 })

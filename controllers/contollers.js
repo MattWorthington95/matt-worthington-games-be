@@ -26,11 +26,14 @@ const patchReviewById = async (req, res, next) => {
 }
 
 const getReviews = async (req, res, next) => {
-    const { sort_by } = req.query
-    const { order } = req.query
-
-    const reviews = await selectReview(sort_by, order)
-    res.status(200).send({ reviews })
+    try {
+        let { sort_by, order, category } = req.query
+        if (order) order = order.toUpperCase()
+        const reviews = await selectReview(sort_by, order, category)
+        res.status(200).send({ reviews })
+    } catch (err) {
+        next(err)
+    }
 }
 
 module.exports = { getCategories, getReviewById, patchReviewById, getReviews }
