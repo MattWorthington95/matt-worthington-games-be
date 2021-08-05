@@ -1,3 +1,4 @@
+const { query } = require("../db/connection");
 const db = require("../db/connection");
 
 const selectCategories = async () => {
@@ -14,7 +15,7 @@ const selectReviewById = async (review_id) => {
         }
 
         const { rows: commentsOnReview } = await db.query('SELECT * FROM comments WHERE review_id = $1', [review_id])
-        // console.log(commentsOnReview, "<<<< COMMENTS ON REVIEWS");
+
         review[0].comment_count = commentsOnReview.length
         return review[0]
     } else {
@@ -58,7 +59,6 @@ const selectReview = async (sort_by = "created_at", order = "DESC", category) =>
         "dexterity": "dexterity"
     }
 
-
     if (!validColumns.includes(sort_by)) {
         return Promise.reject({ status: 400, message: "Invalid 'sort by' term. It does not exist" })
     }
@@ -95,5 +95,13 @@ const selectReview = async (sort_by = "created_at", order = "DESC", category) =>
 }
 
 
+const selectCommentsByReviewId = async (review_id) => {
+    await selectReviewById(review_id)
+    let queryStr = `SELECT * FROM comments WHERE review_id = $1`
+    const queryValues = [review_id]
+    const { rows: comments } = await db.query(queryStr, queryValues)
+    console.log(comments);
+    return comments
+}
 
-module.exports = { selectCategories, selectReviewById, updateReviewById, selectReview }
+module.exports = { selectCategories, selectReviewById, updateReviewById, selectReview, selectCommentsByReviewId }

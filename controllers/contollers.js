@@ -1,4 +1,4 @@
-const { selectCategories, selectReviewById, updateReviewById, selectReview } = require("../models/models");
+const { selectCategories, selectReviewById, updateReviewById, selectReview, selectCommentsByReviewId } = require("../models/models");
 
 const getCategories = async (req, res) => {
     const categories = await selectCategories()
@@ -36,4 +36,15 @@ const getReviews = async (req, res, next) => {
     }
 }
 
-module.exports = { getCategories, getReviewById, patchReviewById, getReviews }
+
+const getCommentsByReviewId = async (req, res, next) => {
+    try {
+        const { review_id } = req.params
+        const comments = await selectCommentsByReviewId(review_id)
+        res.status(200).send({ comments })
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports = { getCategories, getReviewById, patchReviewById, getReviews, getCommentsByReviewId }

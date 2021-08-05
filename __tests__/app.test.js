@@ -210,3 +210,43 @@ describe('/api/reviews', () => {
         });
     });
 })
+
+describe('/api/reviews/:review_id/comments', () => {
+    describe('GET', () => {
+        test('200: returns an array of comments', async () => {
+            const { body: { comments } } = await request(app)
+                .get("/api/reviews/2/comments")
+                .expect(200)
+            expect(Array.isArray(reviews)).toBe(true)
+        });
+        test('200: returns an array of comments in correct format', async () => {
+            const { body: { comments } } = await request(app)
+                .get("/api/reviews/2/comments")
+                .expect(200)
+            comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    author: expect.any(String),
+                    review_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    body: expect.any(String)
+                })
+            })
+        });
+        describe('Error Handling', () => {
+            test('if passed an id that is not a num, send back custom message', async () => {
+                const { body: { message } } = await request(app)
+                    .get('/api/reviews/invalid_id/comments')
+                    .expect(400)
+                expect(message).toBe('Invalid Review Id')
+            });
+            test('if passed an id that doesnt exist, send back custom message', async () => {
+                const { body: { message } } = await request(app)
+                    .get("/api/reviews/20000/comments")
+                    .expect(400)
+                expect(message).toBe('Review not found')
+            });
+        });
+    });
+
+});
