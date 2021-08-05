@@ -1,4 +1,5 @@
 const { selectCategories, selectReviewById, updateReviewById, selectReview, selectCommentsByReviewId, addComment } = require("../models/models");
+const allEndpoints = require("../routers/all-routs");
 
 const getCategories = async (req, res) => {
     const categories = await selectCategories()
@@ -58,4 +59,9 @@ const postCommentByReviewId = async (req, res, next) => {
     }
 }
 
-module.exports = { getCategories, getReviewById, patchReviewById, getReviews, getCommentsByReviewId, postCommentByReviewId }
+const getEndPoints = async (req, res, next) => {
+
+    res.status(200).send(allEndpoints)
+}
+
+module.exports = { getCategories, getReviewById, patchReviewById, getReviews, getCommentsByReviewId, postCommentByReviewId, getEndPoints }

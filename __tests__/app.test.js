@@ -321,3 +321,21 @@ describe('/api/reviews/:review_id/comments', () => {
         });
     });
 });
+
+describe('/api', () => {
+    describe('GET', () => {
+        test('200: returns object will all endpoints', async () => {
+            const { body: allEndPoints } = await request(app)
+                .get("/api")
+                .expect(200)
+            expect(allEndPoints).toMatchObject({
+                '1': 'GET / api / categories',
+                '2': 'GET / api / reviews /: review_id',
+                '3': 'PATCH / api / reviews /: review_id',
+                '4': 'GET / api / reviews',
+                '5': 'GET / api / reviews /: review_id/ comments',
+                '6': 'POST / api / reviews /: review_id / comments'
+            })
+        });
+    });
+});
