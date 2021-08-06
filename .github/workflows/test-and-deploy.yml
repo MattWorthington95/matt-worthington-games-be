@@ -1,14 +1,12 @@
-name : Test and Deploy 
+name: Test and Deploy
 
-on: 
+on:
   push:
-    branches:
-      -main
-
+    branches: -main
 
 jobs:
   greeting:
     run-on: ubuntu-latest
-      steps:
-        - name: Say hello
-          run: echo 'hello world from CI'
+    steps:
+      - name: Say hello
+        run: echo 'hello world from CI'
