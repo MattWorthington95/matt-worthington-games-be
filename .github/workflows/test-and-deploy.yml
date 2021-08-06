@@ -21,5 +21,12 @@ jobs:
       - name: Install dependencies
         run: npm i
 
-      - name: Test utils
-        run: npm t utils
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: test_db
+          postgresql user: testy_mc_face
+          postgresql password: hacked123
+
+      - name: Test everything
+        run: PGDATABASE=test_db PGUSER=testy_mc_face PAPASSWORD=hacked123 npm t
