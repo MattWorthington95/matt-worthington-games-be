@@ -260,7 +260,6 @@ describe('/api/reviews/:review_id/comments', () => {
                 comment_id: 7,
                 author: 'mallionaire',
                 votes: 0,
-                created_at: '2021-08-04T23:00:00.000Z',
                 body: 'NEW COMMENT! <3'
             })
         });
