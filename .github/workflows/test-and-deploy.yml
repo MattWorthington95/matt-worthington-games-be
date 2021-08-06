@@ -7,7 +7,7 @@ on:
 
 jobs:
   greeting:
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Say hello
         run: echo 'hello world from CI'
