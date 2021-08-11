@@ -8,6 +8,7 @@ const {
   selectEndPoints,
   removeCommentById,
   selectUsers,
+  selectUserById,
 } = require("../models/models");
 
 const getCategories = async (req, res) => {
@@ -87,6 +88,16 @@ const getAllUsers = async (req, res, next) => {
   res.status(200).send({ users });
 };
 
+const getUserByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await selectUserById(username);
+    res.status(200).send({ user });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getCategories,
   getReviewById,
@@ -97,4 +108,5 @@ module.exports = {
   getEndPoints,
   deleteCommentById,
   getAllUsers,
+  getUserByUsername,
 };

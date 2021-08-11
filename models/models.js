@@ -172,15 +172,24 @@ const removeCommentById = async (comment_id) => {
     );
     if (comment.length === 0)
       return Promise.reject({ status: 404, message: "Comment Id Not Found" });
-    console.log(comment);
   } else {
     return Promise.reject({ status: 400, message: "Invalid Comment Id" });
   }
 };
 
 const selectUsers = async () => {
-  const { rows: users } = await db.query(`SELECT * FROM users`);
+  const { rows: users } = await db.query(`SELECT username FROM users`);
   return users;
+};
+
+const selectUserById = async (username) => {
+  const { rows: user } = await db.query(
+    `SELECT * FROM users WHERE username = $1`,
+    [username]
+  );
+  if (user.length === 0)
+    return Promise.reject({ status: 404, message: "Username doesnt exist" });
+  return user[0];
 };
 
 module.exports = {
@@ -193,4 +202,5 @@ module.exports = {
   selectEndPoints,
   removeCommentById,
   selectUsers,
+  selectUserById,
 };
