@@ -1,16 +1,19 @@
-
-const db = require('../connection');
+const db = require("../connection");
 const format = require("pg-format");
-const { formatCatData, formatUserData, formatReviewData, titleToMatchID, formatCommentData } = require('../utils/data-manipulation');
-
-
+const {
+  formatCatData,
+  formatUserData,
+  formatReviewData,
+  lookUpIdByTitle,
+  formatCommentData,
+} = require("../utils/data-manipulation");
 
 const seed = async (data) => {
   const { categoryData, commentData, reviewData, userData } = data;
-  await db.query(`DROP TABLE IF EXISTS comments;`)
-  await db.query(`DROP TABLE IF EXISTS reviews;`)
-  await db.query(`DROP TABLE IF EXISTS categories;`)
-  await db.query(`DROP TABLE IF EXISTS users;`)
+  await db.query(`DROP TABLE IF EXISTS comments;`);
+  await db.query(`DROP TABLE IF EXISTS reviews;`);
+  await db.query(`DROP TABLE IF EXISTS categories;`);
+  await db.query(`DROP TABLE IF EXISTS users;`);
 
   // console.log("All tables deleted");
 
@@ -21,7 +24,7 @@ const seed = async (data) => {
       description VARCHAR
     )
     `
-  )
+  );
   // console.log("categories table made");
 
   await db.query(
@@ -32,7 +35,7 @@ const seed = async (data) => {
       name VARCHAR NOT NULL
     )
     `
-  )
+  );
   // console.log("users table made");
 
   await db.query(
@@ -43,13 +46,13 @@ const seed = async (data) => {
       review_body VARCHAR NOT NULL,
       designer VARCHAR NOT NULL,
       review_img_url TEXT NOT NULL,
-      votes INT,
+      votes INT NOT NULL DEFAULT 0,
       category VARCHAR NOT NULL REFERENCES categories(slug), 
       owner VARCHAR NOT NULL REFERENCES users(username),
-      created_at DATE NOT NULL
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     )
     `
-  )
+  );
   // console.log("reviews table created");
 
   await db.query(
@@ -57,16 +60,16 @@ const seed = async (data) => {
     CREATE TABLE comments (
       comment_id SERIAL PRIMARY KEY,
       author VARCHAR NOT NULL REFERENCES users(username),
-      review_id INT NOT NULL REFERENCES reviews(review_id),
-      votes INT,
-      created_at DATE,
+      review_id INT NOT NULL REFERENCES reviews(review_id) ON DELETE CASCADE,
+      votes INT NOT NULL DEFAULT 0,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       body TEXT NOT NULL 
     )
     `
-  )
+  );
   // console.log("comments table created");
 
-  const formattedCatData = formatCatData(categoryData)
+  const formattedCatData = formatCatData(categoryData);
 
   const categoryInsertionQueryStr = format(
     `
@@ -74,13 +77,14 @@ const seed = async (data) => {
     (slug, description)
     VALUES %L
     RETURNING *;
-    `, formattedCatData
-  )
+    `,
+    formattedCatData
+  );
 
-  await db.query(categoryInsertionQueryStr)
+  await db.query(categoryInsertionQueryStr);
   // console.log("inserted into category table!");
 
-  const formattedUserData = formatUserData(userData)
+  const formattedUserData = formatUserData(userData);
 
   const userInsertionQueryStr = format(
     `
@@ -88,13 +92,14 @@ const seed = async (data) => {
       (username, avatar_url, name)
       VALUES %L
       RETURNING *;
-      `, formattedUserData
-  )
+      `,
+    formattedUserData
+  );
 
-  await db.query(userInsertionQueryStr)
+  await db.query(userInsertionQueryStr);
   // console.log("inserted into users table");
 
-  const formattedReviewData = formatReviewData(reviewData)
+  const formattedReviewData = formatReviewData(reviewData);
 
   const reviewInsertionQueryStr = format(
     `
@@ -102,16 +107,16 @@ const seed = async (data) => {
   (title, review_body, designer, review_img_url, votes, category, owner, created_at )
   VALUES %L
   RETURNING *;
-  `, formattedReviewData
-  )
+  `,
+    formattedReviewData
+  );
 
-  const reviewTableData = await db.query(reviewInsertionQueryStr)
+  const reviewTableData = await db.query(reviewInsertionQueryStr);
   // console.log("inserted into reviews table");
 
-  const titleMatchedId = titleToMatchID(reviewTableData.rows)
+  const titleMatchedId = lookUpIdByTitle(reviewTableData.rows);
 
-  const formattedCommentData = formatCommentData(commentData, titleMatchedId)
-
+  const formattedCommentData = formatCommentData(commentData, titleMatchedId);
 
   const commentInsertionQueryStr = format(
     `
@@ -119,11 +124,11 @@ const seed = async (data) => {
     (author, review_id, votes, created_at, body)
     VALUES %L
     RETURNING *;
-    `, formattedCommentData
-  )
-  await db.query(commentInsertionQueryStr)
+    `,
+    formattedCommentData
+  );
+  await db.query(commentInsertionQueryStr);
   // console.log("inserted into comments table");
 };
-
 
 module.exports = { seed };

@@ -5,8 +5,9 @@ const {
   selectReview,
   selectCommentsByReviewId,
   addComment,
+  selectEndPoints,
+  removeCommentById,
 } = require("../models/models");
-const allEndpoints = require("../routers/all-routs");
 
 const getCategories = async (req, res) => {
   const categories = await selectCategories();
@@ -66,9 +67,19 @@ const postCommentByReviewId = async (req, res, next) => {
 };
 
 const getEndPoints = async (req, res, next) => {
-  res.status(200).send(allEndpoints);
+  const endPoints = await selectEndPoints();
+  res.status(200).send(endPoints);
 };
 
+const deleteCommentById = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    await removeCommentById(comment_id);
+    return res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+};
 module.exports = {
   getCategories,
   getReviewById,
@@ -77,4 +88,5 @@ module.exports = {
   getCommentsByReviewId,
   postCommentByReviewId,
   getEndPoints,
+  deleteCommentById,
 };

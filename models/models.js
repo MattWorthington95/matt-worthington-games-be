@@ -1,5 +1,6 @@
 const { query } = require("../db/connection");
 const db = require("../db/connection");
+const fs = require("fs");
 
 const selectCategories = async () => {
   const { rows: categories } = await db.query("SELECT * FROM categories");
@@ -25,7 +26,7 @@ const selectReviewById = async (review_id) => {
     review[0].comment_count = commentsOnReview.length;
     return review[0];
   } else {
-    return Promise.reject({ status: 404, message: "Invalid Review Id" });
+    return Promise.reject({ status: 400, message: "Invalid Review Id" });
   }
 };
 
@@ -39,7 +40,7 @@ const updateReviewById = async (review_id, inc_votes) => {
   }
   if (typeof inc_votes !== "number") {
     return Promise.reject({
-      status: 404,
+      status: 400,
       message: "inc_votes need to be a number",
     });
   }
@@ -72,6 +73,7 @@ const selectReview = async (
     eurogame: "euro game",
     socialdeduction: "social deduction",
     dexterity: "dexterity",
+    childrensgame: "children''s game",
   };
 
   if (!validColumns.includes(sort_by)) {
@@ -152,6 +154,30 @@ const addComment = async (review_id, username, body) => {
   return addedComment[0];
 };
 
+const selectEndPoints = async () => {
+  const fsPromises = require("fs").promises;
+  const data = await fsPromises
+    .readFile("./endpoints.json", "utf-8")
+    .catch((err) => console.error("Failed to read file", err));
+
+  return JSON.parse(data.toString());
+  // const file = await fs.readFile("../end");
+};
+
+const removeCommentById = async (comment_id) => {
+  if (/\d+$/.test(comment_id)) {
+    const { rows: comment } = await db.query(
+      `DELETE from comments WHERE comment_id = $1 RETURNING *`,
+      [comment_id]
+    );
+    if (comment.length === 0)
+      return Promise.reject({ status: 404, message: "Comment Id Not Found" });
+    console.log(comment);
+  } else {
+    return Promise.reject({ status: 400, message: "Invalid Comment Id" });
+  }
+};
+
 module.exports = {
   selectCategories,
   selectReviewById,
@@ -159,4 +185,6 @@ module.exports = {
   selectReview,
   selectCommentsByReviewId,
   addComment,
+  selectEndPoints,
+  removeCommentById,
 };
