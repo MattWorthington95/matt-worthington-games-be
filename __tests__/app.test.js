@@ -481,4 +481,14 @@ describe("/api/users/:username", () => {
       });
     });
   });
+  describe("PATCH", () => {
+    test.only("201: return patched comment", async () => {
+      const {
+        body: { updatedComment },
+      } = await request(app)
+        .patch("/api/users/1")
+        .send({ inc_votes: 1 })
+        .expect(201);
+    });
+  });
 });

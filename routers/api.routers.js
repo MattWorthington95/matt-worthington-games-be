@@ -1,5 +1,5 @@
 const app = require("../app");
-const { getEndPoints } = require("../controllers/contollers");
+const { getEndPoints } = require("../controllers/controllers");
 const categoriesRouter = require("./categories.routers");
 const commentsRouter = require("./comments.routers");
 const reviewRouter = require("./review.routers");

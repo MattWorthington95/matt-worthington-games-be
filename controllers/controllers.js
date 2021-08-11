@@ -98,6 +98,10 @@ const getUserByUsername = async (req, res, next) => {
   }
 };
 
+const patchCommentById = async () => {
+  console.log("in controller");
+};
+
 module.exports = {
   getCategories,
   getReviewById,
@@ -109,4 +113,5 @@ module.exports = {
   deleteCommentById,
   getAllUsers,
   getUserByUsername,
+  patchCommentById,
 };
