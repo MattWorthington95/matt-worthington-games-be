@@ -442,6 +442,55 @@ describe("/api/comments/:comment_id", () => {
       expect(message).toEqual("Comment Id Not Found");
     });
   });
+  describe("PATCH", () => {
+    test("201: return patched comment", async () => {
+      const {
+        body: { updatedComment },
+      } = await request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: 1 })
+        .expect(201);
+      expect(updatedComment.votes).toEqual(17);
+    });
+    describe("Error Handling", () => {
+      test("400: return custom message is passed wrong key", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .patch("/api/comments/1")
+          .send({ incorrect_key: 1 })
+          .expect(400);
+        expect(message).toBe("Incorrect key, cannot patch");
+      });
+      test("400: return custom message is passed wrong value", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: "hello" })
+          .expect(400);
+        expect(message).toBe("inc_votes must be a number");
+      });
+      test("404 if passed a comment id that isnt a number return custom message", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .patch("/api/comments/hello")
+          .send({ inc_votes: 1 })
+          .expect(404);
+        expect(message).toBe("Invalid Comment ID");
+      });
+      test("400 if comment id doesnt exist", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .patch("/api/comments/9999")
+          .send({ inc_votes: 1 })
+          .expect(400);
+        expect(message).toBe("Comment ID not found");
+      });
+    });
+  });
 });
 
 describe("/api/users", () => {
@@ -456,6 +505,9 @@ describe("/api/users", () => {
           username: expect.any(String),
         });
       });
+    });
+    describe("Error Handling", () => {
+      test("404", () => {});
     });
   });
 });
@@ -479,16 +531,6 @@ describe("/api/users/:username", () => {
         } = await request(app).get("/api/users/newusername2021").expect(404);
         expect(message).toEqual("Username doesnt exist");
       });
-    });
-  });
-  describe("PATCH", () => {
-    test.only("201: return patched comment", async () => {
-      const {
-        body: { updatedComment },
-      } = await request(app)
-        .patch("/api/users/1")
-        .send({ inc_votes: 1 })
-        .expect(201);
     });
   });
 });

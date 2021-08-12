@@ -9,6 +9,7 @@ const {
   removeCommentById,
   selectUsers,
   selectUserById,
+  updateComment,
 } = require("../models/models");
 
 const getCategories = async (req, res) => {
@@ -98,8 +99,15 @@ const getUserByUsername = async (req, res, next) => {
   }
 };
 
-const patchCommentById = async () => {
-  console.log("in controller");
+const patchCommentById = async (req, res, next) => {
+  try{
+    const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  const updatedComment = await updateComment(comment_id, inc_votes);
+  res.status(201).send({ updatedComment });
+  }catch (err){
+    next(err)
+  }
 };
 
 module.exports = {
