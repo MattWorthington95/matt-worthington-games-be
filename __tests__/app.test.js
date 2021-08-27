@@ -177,7 +177,6 @@ describe("/api/reviews", () => {
         body: { reviews },
       } = await request(app).get("/api/reviews?sort_by=votes").expect(200);
       expect(reviews[0].votes).toBe(100);
-      expect(reviews[reviews.length - 1].votes).toBe(1);
     });
     test("200: if passed valid sort query, sort by it", async () => {
       const {
@@ -195,7 +194,6 @@ describe("/api/reviews", () => {
         .get("/api/reviews?sort_by=comment_count&order=asc")
         .expect(200);
       expect(reviews[0].comment_count).toBe("0");
-      expect(reviews[reviews.length - 1].comment_count).toBe("3");
     });
     test("200: will filter categories", async () => {
       const {
@@ -208,13 +206,32 @@ describe("/api/reviews", () => {
         })
       ).toBe(true);
     });
-    test("should ", async () => {
+    test("return an empty array is no reviews in category ", async () => {
       const {
         body: { reviews },
       } = await request(app)
         .get("/api/reviews?category=childrensgame")
         .expect(200);
     });
+    test("200: return 5 reviews as a default limit", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews").expect(200);
+      expect(reviews).toHaveLength(5);
+    });
+    test("200: returns num of reviews as limit added by user ", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews?limit=10").expect(200);
+      expect(reviews).toHaveLength(10);
+    });
+    test("200: returns correct review when page specified", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews?page=3").expect(200);
+      expect(reviews[0].review_id).toBe(3);
+    });
+    test("should ", () => {});
     describe("Error Handling", () => {
       test("should return custom message if invalid sort_by", async () => {
         const {

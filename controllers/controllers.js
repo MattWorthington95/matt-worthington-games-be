@@ -39,9 +39,9 @@ const patchReviewById = async (req, res, next) => {
 
 const getReviews = async (req, res, next) => {
   try {
-    let { sort_by, order, category } = req.query;
+    let { sort_by, order, category, limit, page } = req.query;
     if (order) order = order.toUpperCase();
-    const reviews = await selectReview(sort_by, order, category);
+    const reviews = await selectReview(sort_by, order, category, limit, page);
     res.status(200).send({ reviews });
   } catch (err) {
     next(err);
@@ -100,13 +100,13 @@ const getUserByUsername = async (req, res, next) => {
 };
 
 const patchCommentById = async (req, res, next) => {
-  try{
+  try {
     const { comment_id } = req.params;
-  const { inc_votes } = req.body;
-  const updatedComment = await updateComment(comment_id, inc_votes);
-  res.status(201).send({ updatedComment });
-  }catch (err){
-    next(err)
+    const { inc_votes } = req.body;
+    const updatedComment = await updateComment(comment_id, inc_votes);
+    res.status(201).send({ updatedComment });
+  } catch (err) {
+    next(err);
   }
 };
 

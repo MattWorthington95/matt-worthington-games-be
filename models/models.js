@@ -55,9 +55,11 @@ const updateReviewById = async (review_id, inc_votes) => {
 };
 
 const selectReview = async (
-  sort_by = "created_at",
+  sort_by = "review_id",
   order = "DESC",
-  category
+  category,
+  limit = 5,
+  page = 1
 ) => {
   const validColumns = [
     "review_id",
@@ -111,7 +113,24 @@ const selectReview = async (
   queryStr += ` GROUP BY reviews.review_id`;
   queryStr += ` ORDER BY ${sort_by} ${order}`;
 
+  const offset = (page - 1) * limit;
+
+  if (queryValues.length > 0) {
+    queryValues.push(limit);
+
+    queryStr += ` LIMIT $2 `;
+    if (page) {
+      queryValues.push(offset);
+      queryStr += `OFFSET $3`;
+    }
+  } else {
+    queryValues.push(limit);
+    queryValues.push(offset);
+    queryStr += ` LIMIT $1 OFFSET $2`;
+  }
+
   const { rows: reviews } = await db.query(queryStr, queryValues);
+  console.log(reviews);
   return reviews;
 };
 
