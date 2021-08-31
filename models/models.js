@@ -77,6 +77,12 @@ const selectReview = async (
     dexterity: "dexterity",
     childrensgame: "children''s game",
     strategy: "strategy",
+    "hidden-roles": "hidden-roles",
+    dexterity: "dexterity",
+    "push-your-luck": "push-your-luck",
+    "roll-and-write": "roll-and-write",
+    "deck-building": "deck-building",
+    "engine-building": "engine-building",
   };
 
   if (!validColumns.includes(sort_by)) {
