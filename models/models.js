@@ -76,6 +76,7 @@ const selectReview = async (
     socialdeduction: "social deduction",
     dexterity: "dexterity",
     childrensgame: "children''s game",
+    strategy: "strategy",
   };
 
   if (!validColumns.includes(sort_by)) {
