@@ -43,7 +43,7 @@ const seed = async (data) => {
     CREATE TABLE reviews (
       review_id SERIAL PRIMARY KEY,
       title VARCHAR NOT NULL,
-      review_body VARCHAR NOT NULL,
+      review_body TEXT NOT NULL,
       designer VARCHAR NOT NULL,
       review_img_url TEXT NOT NULL,
       votes INT NOT NULL DEFAULT 0,

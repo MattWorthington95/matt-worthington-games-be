@@ -171,11 +171,12 @@ describe("formatReviewsData", () => {
         votes: 1,
       },
     ];
+    console.log(formatReviewData(input));
     expect(formatReviewData(input)).toEqual([
       [
         "Title1",
+        "body1",
         "Designer1",
-        "onwer1",
         "url1",
         1,
         "cat1",

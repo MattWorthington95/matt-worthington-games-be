@@ -22,8 +22,8 @@ const formatReviewData = (data) => {
     const reviewCopy = { ...review };
     return [
       reviewCopy.title,
+      reviewCopy.review_body,
       reviewCopy.designer,
-      reviewCopy.owner,
       reviewCopy.review_img_url,
       reviewCopy.votes,
       reviewCopy.category,
@@ -32,6 +32,14 @@ const formatReviewData = (data) => {
     ];
   });
 };
+// reviewCopy.title,
+// reviewCopy.body,
+// reviewCopy.designer,
+// reviewCopy.review_img_url,
+// reviewCopy.votes,
+// reviewCopy.category,
+// reviewCopy.owner,
+// reviewCopy.created_at,
 
 const lookUpIdByTitle = (reviewData) => {
   if (reviewData.length === 0) return [];

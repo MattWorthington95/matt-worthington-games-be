@@ -137,7 +137,7 @@ const selectReview = async (
   }
 
   const { rows: reviews } = await db.query(queryStr, queryValues);
-  console.log(reviews);
+
   return reviews;
 };
 

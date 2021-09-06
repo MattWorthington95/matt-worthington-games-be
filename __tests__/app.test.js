@@ -54,17 +54,19 @@ describe("/api/reviews/:review_id", () => {
         body: { review },
       } = await request(app).get("/api/reviews/2").expect(200);
       expect(Object.entries(review)).toHaveLength(10);
+      console.log(review);
 
       expect(review).toMatchObject({
         review_id: 2,
         title: "Jenga",
-        review_body: "Leslie Scott",
-        designer: "philippaclaire9",
+        review_body: "Fiddly fun for all the family",
+        designer: "Leslie Scott",
         review_img_url:
           "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
         votes: 5,
         category: "dexterity",
         owner: "philippaclaire9",
+
         comment_count: 3,
       });
     });
@@ -94,8 +96,8 @@ describe("/api/reviews/:review_id", () => {
       expect(updatedReview).toEqual({
         review_id: 2,
         title: "Jenga",
-        review_body: "Leslie Scott",
-        designer: "philippaclaire9",
+        review_body: "Fiddly fun for all the family",
+        designer: "Leslie Scott",
         review_img_url:
           "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
         votes: 6,
