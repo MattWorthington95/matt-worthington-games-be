@@ -54,7 +54,6 @@ describe("/api/reviews/:review_id", () => {
         body: { review },
       } = await request(app).get("/api/reviews/2").expect(200);
       expect(Object.entries(review)).toHaveLength(10);
-      console.log(review);
 
       expect(review).toMatchObject({
         review_id: 2,
@@ -275,6 +274,7 @@ describe("/api/reviews/:review_id/comments", () => {
       const {
         body: { comments },
       } = await request(app).get("/api/reviews/2/comments").expect(200);
+
       comments.forEach((comment) => {
         expect(comment).toMatchObject({
           comment_id: expect.any(Number),
@@ -428,8 +428,9 @@ describe("/api", () => {
           exampleResponse: expect.any(Object),
         },
         "GET /api/reviews": {
-          description: "serves an array of all reviews",
-          queries: ["category", "sort_by", "order"],
+          description:
+            "serves an array of all reviews with default pagination set to a limit of 5",
+          queries: ["category", "sort_by", "order", "page", "limit"],
           exampleResponse: expect.any(Object),
         },
       });
@@ -469,6 +470,7 @@ describe("/api/comments/:comment_id", () => {
         .patch("/api/comments/1")
         .send({ inc_votes: 1 })
         .expect(201);
+
       expect(updatedComment.votes).toEqual(17);
     });
     describe("Error Handling", () => {
@@ -530,6 +532,7 @@ describe("/api/users", () => {
     });
   });
 });
+
 describe("/api/users/:username", () => {
   describe("GET", () => {
     test("200: returns to correct user when passed username", async () => {
